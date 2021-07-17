@@ -1,6 +1,7 @@
 package com.abhi.emppayroll;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public class EmployeePayrollService {
@@ -71,5 +72,10 @@ public class EmployeePayrollService {
         List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);
         return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
     }
-    
+
+    public List<EmployeePayrollData> readEmployeePayrollForDateRange(IOService ioService, LocalDate startDate, LocalDate endDate) {
+        if (ioService.equals(IOService.DB_IO))
+            return employeePayrollDBService.getEmployeePayrollForDateRange(startDate, endDate);
+        return null;
+    }
 }

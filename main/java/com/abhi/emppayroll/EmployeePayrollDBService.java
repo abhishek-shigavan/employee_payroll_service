@@ -38,24 +38,13 @@ public class EmployeePayrollDBService {
         return connection;
     }
     /**
-     * This method 1st establish database connection through getConnection() then pass the sql query
-     * to execute & store the result in resultSet
-     * Fetch the resultSet data & assign it as EmployeePayrollData properties
-     * & store it in list & returns the list
+     * This pass the query to retrieve data from database
      *
      * @return employeePayrollList -- contains output result of query
      */
     public List<EmployeePayrollData> readData() {
         String sql = "select * from employee_payroll";
-        List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            employeePayrollList = this.getEmployeePayrollData(resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return employeePayrollList;
+        return this.getEmployeePayrollDataUsingDB(sql);
     }
     /**
      * This method pass given i/p as a parameter to prepared statement & returns the result
@@ -103,7 +92,24 @@ public class EmployeePayrollDBService {
         return employeePayrollList;
     }
     /**
-     * This method prepare prepared statement & keeps it in memory
+     * This method executes given sql query & returns the list of EmployeePayrollData object
+     *
+     * @param sql - sql query
+     * @return employeePayrollList - list of EmployeePayrollData object
+     */
+    private List<EmployeePayrollData> getEmployeePayrollDataUsingDB(String sql) {
+        List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+        try (Connection connection = this.getConnection()){
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            employeePayrollList = this.getEmployeePayrollData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeePayrollList;
+    }
+    /**
+     * This method creates prepared statement & keeps it in memory
      */
     private void preparedStatementForEmployeeData() {
         try{
@@ -136,5 +142,17 @@ public class EmployeePayrollDBService {
             e.printStackTrace();
         }
         return 0;
+    }
+    /**
+     * This method retrieves data between given date range from database
+     *
+     * @param startDate
+     * @param endDate
+     * @return employeePayrollList
+     */
+    public List<EmployeePayrollData> getEmployeePayrollForDateRange(LocalDate startDate, LocalDate endDate) {
+        String sql = String.format("select *from employee_payroll where START BETWEEN '%s' AND '%s';",
+                                    Date.valueOf(startDate), Date.valueOf(endDate));
+        return this.getEmployeePayrollDataUsingDB(sql);
     }
 }
