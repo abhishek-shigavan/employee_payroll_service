@@ -30,4 +30,19 @@ public class EmployeePayrollData {
                 ", Start Date = " + startDate +
                 '}';
     }
+    /**
+     * This method checks object values are same / not
+     *
+     * @param obj
+     * @return true if objects values are same
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        EmployeePayrollData that = (EmployeePayrollData) obj;
+        return id == that.id &&
+                Double.compare(that.salary, salary) == 0 &&
+                name.equals(that.name);
+    }
 }
