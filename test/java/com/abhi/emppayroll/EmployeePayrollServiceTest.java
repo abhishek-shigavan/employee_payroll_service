@@ -3,6 +3,7 @@ package com.abhi.emppayroll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import static com.abhi.emppayroll.EmployeePayrollService.IOService.DB_IO;
 
@@ -28,5 +29,15 @@ public class EmployeePayrollServiceTest {
         employeePayrollService.updateEmployeeSalary("Terisa", 3000000.00, DB_IO);
         boolean result = employeePayrollService.checkEmployeePayrollSyncWithDB("Terisa");
         Assertions.assertTrue(result);
+    }
+
+    @Test
+    void givenDateRange_WhenRetrieved_ShouldMatchEmployeeCount() throws SQLException {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeeData(DB_IO);
+        LocalDate startDate = LocalDate.of(2018, 01, 01);
+        LocalDate endDate = LocalDate.now();
+        List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollForDateRange(DB_IO, startDate, endDate);
+        Assertions.assertEquals(3, employeePayrollData.size());
     }
 }
