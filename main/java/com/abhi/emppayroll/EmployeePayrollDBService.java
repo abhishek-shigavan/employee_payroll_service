@@ -14,8 +14,7 @@ public class EmployeePayrollDBService {
     private PreparedStatement employeePayrollDataStatement;
     private  static  EmployeePayrollDBService employeePayrollDBService;
 
-    private EmployeePayrollDBService() {
-    }
+    private EmployeePayrollDBService() {}
 
     public static EmployeePayrollDBService getInstance(){
         if (employeePayrollDBService == null)
