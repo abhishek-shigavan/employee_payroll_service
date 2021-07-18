@@ -3,7 +3,9 @@ package com.abhi.emppayroll;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * EmployeePayrollDBService --  Defining methods to perform CRUD operations on database
@@ -62,8 +64,7 @@ public class EmployeePayrollDBService {
             employeePayrollDataStatement.setString(1,name);
             ResultSet resultSet = employeePayrollDataStatement.executeQuery();
             employeePayrollList = this.getEmployeePayrollData(resultSet);
-        }catch (SQLException e)
-        {
+        }catch (SQLException e) {
             e.printStackTrace();
         }
         return employeePayrollList;
@@ -85,8 +86,7 @@ public class EmployeePayrollDBService {
                 LocalDate startDate = resultSet.getDate("start").toLocalDate();
                 employeePayrollList.add(new EmployeePayrollData(id, name, salary, startDate));
             }
-        }catch (SQLException e)
-        {
+        }catch (SQLException e) {
             e.printStackTrace();
         }
         return employeePayrollList;
@@ -116,8 +116,7 @@ public class EmployeePayrollDBService {
             Connection connection = this.getConnection();
             String sql = "select * from employee_payroll where name = ?";
             employeePayrollDataStatement = connection.prepareStatement(sql);
-        }catch (SQLException e)
-        {
+        }catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -137,8 +136,7 @@ public class EmployeePayrollDBService {
         try(Connection connection = this.getConnection()){
             Statement statement = connection.createStatement();
             return statement.executeUpdate(sql);
-        }catch(SQLException e)
-        {
+        }catch(SQLException e) {
             e.printStackTrace();
         }
         return 0;
@@ -154,5 +152,59 @@ public class EmployeePayrollDBService {
         String sql = String.format("select *from employee_payroll where START BETWEEN '%s' AND '%s';",
                                     Date.valueOf(startDate), Date.valueOf(endDate));
         return this.getEmployeePayrollDataUsingDB(sql);
+    }
+    /**
+     * This method performs group by clause on gender field & store the result gender field as key &
+     * result as its value in map & returns it
+     *
+     * @param sql - sql query
+     * @return
+     */
+    public Map<String, Double> getGenderGroupByQueryResult(String sql){
+        Map<String ,Double> genderGroupByResultMap = new HashMap<>();
+        try (Connection connection = this.getConnection()){
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                String gender = resultSet.getString("gender");
+                double salary = resultSet.getDouble("result");
+                genderGroupByResultMap.put(gender, salary);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return genderGroupByResultMap;
+    }
+    /**
+     * This method gets average salary of employee by gender
+     * @return genderGroupByResultMap - gender & its average salary
+     */
+    public Map<String, Double> getAverageSalaryByGender() {
+        String sql = " select gender , avg(salary)  as result from employee_payroll group by gender;";
+        return getGenderGroupByQueryResult(sql);
+    }
+    /**
+     * This method gets sum of salary of employee by gender
+     * @return genderGroupByResultMap - gender & its total salary
+     */
+    public Map<String, Double> getSumOfSalaryByGender() {
+        String sql = " select gender , sum(salary)  as result from employee_payroll group by gender;";
+        return getGenderGroupByQueryResult(sql);
+    }
+    /**
+     * This method gets minimum salary of employee by gender
+     * @return genderGroupByResultMap - gender & its minimum salary
+     */
+    public Map<String, Double> getMinOfSalaryByGender() {
+        String sql = " select gender , min(salary)  as result from employee_payroll group by gender;";
+        return getGenderGroupByQueryResult(sql);
+    }
+    /**
+     * This method gets average salary of employee by gender
+     * @return genderGroupByResultMap - gender & its maximum salary
+     */
+    public Map<String, Double> getMaxOfSalaryByGender() {
+        String sql = " select gender , max(salary)  as result from employee_payroll group by gender;";
+        return getGenderGroupByQueryResult(sql);
     }
 }
