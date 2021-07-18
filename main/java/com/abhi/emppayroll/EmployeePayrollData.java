@@ -11,6 +11,7 @@ public class EmployeePayrollData {
     //defining employee payroll field
     public int id;
     public String name;
+    public String gender;
     public double salary;
     public LocalDate startDate;
 
@@ -21,13 +22,22 @@ public class EmployeePayrollData {
         this.startDate = startDate;
     }
 
+    public EmployeePayrollData(int id, String name, String gender, double salary, LocalDate startDate) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.salary = salary;
+        this.startDate = startDate;
+    }
+
     @Override
     public String toString() {
         return "EmployeePayrollData{" +
-                "Id = " + id +
-                ", Name ='" + name + '\'' +
-                ", Salary = " + salary +
-                ", Start Date = " + startDate +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", salary=" + salary +
+                ", startDate=" + startDate +
                 '}';
     }
     /**
