@@ -101,4 +101,18 @@ public class EmployeePayrollServiceTest {
         Assertions.assertTrue(maxOfSalaryByGender.get("M").equals(3000000.00) &&
                                 maxOfSalaryByGender.get("F").equals(3000000.00) );
     }
+    /**
+     * Adding new entry into database & checking after adding employee payroll is in sync with
+     * database / not
+     *
+     * @throws SQLException
+     */
+    @Test
+    void givenNewEmployee_WhenAdded_ShouldSyncWithDB() throws SQLException {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeeData(DB_IO);
+        employeePayrollService.addEmployeeToPayroll("Mark", "M",5000000.00, LocalDate.now());
+        boolean result = employeePayrollService.checkEmployeePayrollSyncWithDB("Mark");
+        Assertions.assertTrue(result);
+    }
 }
