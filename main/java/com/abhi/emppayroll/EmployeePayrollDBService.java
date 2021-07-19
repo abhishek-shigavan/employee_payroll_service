@@ -207,4 +207,31 @@ public class EmployeePayrollDBService {
         String sql = " select gender , max(salary)  as result from employee_payroll group by gender;";
         return getGenderGroupByQueryResult(sql);
     }
+    /**
+     * Adding new entry into database
+     *
+     * @param name - name of employee
+     * @param gender  - gender of employee
+     * @param salary  - salary of employee
+     * @param startDate  - joining date of employee
+     * @return employeePayrollData
+     */
+    public EmployeePayrollData addEmployeeToPayroll(String name, String gender, double salary, LocalDate startDate) {
+        int employeeId = -1;
+        EmployeePayrollData employeePayrollData = null;
+        String sql = String.format("insert into employee_payroll (name, gender, salary, start) " +
+                            "values ('%s', '%s', %s, '%s' )", name, gender, salary, Date.valueOf(startDate));
+        try (Connection connection = this.getConnection()){
+            Statement statement = connection.createStatement();
+            int rowAffected = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
+            if (rowAffected == 1) {
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) employeeId = resultSet.getInt(1);
+            }
+            employeePayrollData = new EmployeePayrollData(employeeId, name, salary, startDate);
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeePayrollData;
+    }
 }

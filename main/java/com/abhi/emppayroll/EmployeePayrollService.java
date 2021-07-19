@@ -103,4 +103,8 @@ public class EmployeePayrollService {
             return employeePayrollDBService.getMaxOfSalaryByGender();
         return null;
     }
+
+    public void addEmployeeToPayroll(String name, String gender, double salary, LocalDate startDate) {
+        empPayrollDataList.add(employeePayrollDBService.addEmployeeToPayroll(name, gender, salary, startDate));
+    }
 }
